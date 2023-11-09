@@ -1,15 +1,18 @@
 import requests
 import json
+import sys
 
 
+def upload(token,img_pth):
+#    url = 'http://221.8.55.174:8081/prod-api/system/oss/upload'
+#     url = 'https://szhmd.mengxist.com:10444/prod-api/system/oss/upload'
+    url = 'https://szhmd.mengxist.com:10444/prod-api/file/upload'
 
-def upload(token):
-    url = 'http://221.8.55.174:8081/prod-api/system/oss/upload'
-
-
+    file_name = img_pth.split('/')[-1]
+#    print(file_name)
     # payload={}
     files=[
-       ('file',('<file>',open('/Users/liufucong/Desktop/2023-04-25_14_20_24.jpg','rb'),'application/octet-stream'))
+            ('file',(file_name,open(img_pth,'rb'),'application/octet-stream'))
     ]
     headers = {
        'User-Agent': 'apifox/1.0.0 (https://www.apifox.cn)',
@@ -17,14 +20,17 @@ def upload(token):
     }
 
     response = requests.request("POST", url, headers=headers, files=files)
+    print(response.json())
+#    print(response.text)
+    #print(response.json()["data"]["url"],type(response.json()["data"]["url"]),len(response.json()["data"]["url"]))
+#    print(response.json()["data"]['url'])
+#    return(response.json()["data"]['url'])
+    return(response.json()['data']["url"])
 
-    print(response.text)
-    return(response.json()["data"])
-    # print(response.json)
 
 
 def key_token():
-    url = "http://221.8.55.174:8081/prod-api/business/appLogin/login"
+    url = "https://szhmd.mengxist.com:10444/prod-api/auth/appLogin"
 
     payload = json.dumps({
         "password": "123456",
@@ -35,7 +41,7 @@ def key_token():
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    return response.json()["token"]
+    return response.json()['data']["access_token"]
     # print(type(response))
     # print(response.json()["token"])
 
@@ -44,7 +50,7 @@ def key_token():
 # ll = key_token()
 # print(ll)
 #
-# ls = upload(ll)
+# ls = upload(ll,'/Users/liufucong/Desktop/WechatIMG23.jpg')
 # print(ls)
 
 # def str_to_hex(s):
@@ -59,62 +65,6 @@ def key_token():
 
 
 #方法二
-List_1 =[1,2,2,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5]
 
-
-
-
-List_2 = [1,2,2,3,3,3,3,3,3,3,4,4,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,6,6]
-
-d1 = {}
-d2 = {}
-for i in List_1:
-    d1[i] = [List_1.count(i),False]
-
-
-for i in List_2:
-    d2[i] = [List_2.count(i),True]
-
-
-print(d1)
-
-print(d2)
-
-# ll= dict(d1, **d2)
-#
-# print(ll)
-for k, v in d2.items():
-    if k in d1.keys():
-        d1[k][0] = d1[k][0]+v[0]
-        d1[k][1] = d1[k][1] & v[1]
-    else:
-        d1[k]=v
-
-
-# d1.update(d2)
-# dict(d1.items() + d2.items())
-print(d1)
-
-
-# print('d1-----------------',d1)
-# for i in d1.items():
-#     print(type(i[0]))
-# print(d1.items())
-
-# huojia_label = [1,2,3,4,5]
-#
-# a = dict(cls=str(2),whole_label=huojia_label)
-# print(a)
-import matplotlib.pyplot as plt
-tt = []
-with open('/Users/liufucong/Desktop/epoch_acc.txt','r') as f:
-    data = f.read().splitlines()
-    # print(data)
-for i in data:
-    tt.append(int(i*10))
-
-iters = range(100)
-
-plt.figure()
-plt.plot(iters,tt, 'red', linewidth = 2, label='train loss')
-plt.show()
+if __name__ == '__main__':
+    print(sys.argv[0])
